@@ -1,0 +1,9 @@
+*.pyc
+build
+pip-log.txt
+sqlite.db
+*.swp
+*.mo
+*~
+
+
