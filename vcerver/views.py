@@ -53,6 +53,9 @@ def vcard(request, contact_id):
     response['Content-Disposition'] = 'attachment; filename=%s' % filename
     return response
 
+def qr_code(request, contact_id):
+    pass
+
 def group_vcard(request):
     """
     View function for returning group vcard
