@@ -33,12 +33,56 @@ def _vcard_string(person):
     v.add('fn')
     v.fn.value = "%s %s" % (person.firstname, person.lastname)
     v.add('email')
-    v.email.value = person.email
-    #v.add('tel')
-    #v.tel.value = person.phone
-    #v.tel.type_param = 'WORK'
-    v.add('url')
-    v.url.value = "http://example.org/people/%s/" % person.id
+    if person.personnal_address:
+        a = person.personnal_address
+        addr = v.add('ADR')
+        addr.type_param = 'HOME'
+        street = a.street1
+        if a.street2: street += ', ' + a.street2
+        addr.value = vobject.vcard.Address(
+            street=street,
+            city=a.city,
+            region=a.state,
+            code=a.zipcode,
+            country=a.country
+        )
+    if person.work and person.work.address:
+        a = person.work.address
+        addr = v.add('ADR')
+        addr.type_param = 'WORK'
+        street = a.street1
+        if a.street2: street += ', ' + a.street2
+        addr.value = vobject.vcard.Address(
+            street=street,
+            city=a.city,
+            region=a.state,
+            code=a.zipcode,
+            country=a.country
+        )
+
+    if person.email:
+        email = v.add('email')
+        email.value = person.email
+        email.type_param='INTERNET'
+    if person.title:
+        v.add('title')
+        v.title.value = person.title
+    if person.work:
+        org = v.add('org')
+        org.value = (person.work.name, )
+    for tel in person.phone_set.all():
+        t = v.add('tel')
+        t.type_param = tel.name.upper()
+        t.value = tel.number
+    for url in person.url_set.all():
+        u = v.add('url')
+        if url.explicit_url:
+            u.type_param = 'HOME'
+            u.value = url.explicit_url
+        else:
+            u.type_param = url.type.upper()
+            u.value = URLS[url.type]%url.__dict__
+
     output = v.serialize()
     return output
     

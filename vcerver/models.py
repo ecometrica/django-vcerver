@@ -32,6 +32,11 @@ class Contact(models.Model):
     def email(self):
         return self.local_user and self.local_user.email or self._email
 
+class Phone(models.Model):
+    contact = models.ForeignKey('Contact', null=False, blank=False)
+    name = models.CharField(max_length=256, blank=False)
+    number = models.CharField(max_length=256, blank=False)
+
 class Company(models.Model):
     name = models.CharField(max_length=256, blank=False)
     address = models.ForeignKey('Address', null=True, blank=True)
@@ -53,10 +58,16 @@ class Address(models.Model):
 URLTYPES = (("linkedin", "LinkedIn"), 
             ("twitter", "Twitter"),
             ("facebook", "Facebook"),
+            ("skype", "Skype"),
+            ("gtalk", "GTalk"),
+            ("msn", "MSN"),
            )
 URLS = {"linkedin": "http://linkedin.com/in/%(username)s",
         "twitter": "http://twitter.com/%(username)s",
         "facebook": "http://facebook.com/%(username)s",
+        "skype": "%(username)s",
+        "gtalk": "%(username)s",
+        "msn": "%(username)s",
        }
 
 class URL(models.Model):
