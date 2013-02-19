@@ -12,10 +12,13 @@ The functions assume a "Person" object with the following fields:
 This code uses VObject: http://vobject.skyhouseconsulting.com/
 """
 
-# TODO: urls, phone
+import tempfile
+import qrcode
 
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+
 import vobject
 
 from vcerver.models import *
@@ -98,7 +101,16 @@ def vcard(request, contact_id):
     return response
 
 def qr_code(request, contact_id):
-    pass
+    url = reverse('vcard', args=[contact_id])
+    img = qrcode.make(url)
+    pipe = tempfile.TemporaryFile()
+    img.save(pipe)
+    pipe.seek(0)
+    filename = "%s.png" % (contact_id)
+    response = HttpResponse(pipe.read(), mimetype="image/png")
+    return response
+
+
 
 def group_vcard(request):
     """

@@ -6,3 +6,5 @@ paramiko
 gunicorn
 ipdb
 svn+http://svn.osafoundation.org/vobject/trunk/#egg=vobject
+qrcode
+
