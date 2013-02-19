@@ -101,8 +101,8 @@ def vcard(request, contact_id):
     return response
 
 def qr_code(request, contact_id):
-    url = reverse('vcard', args=[contact_id])
-    img = qrcode.make(url)
+    url = request.build_absolute_uri(reverse('vcard', args=[contact_id]))
+    img = qrcode.make(url, error_correction=qrcode.constants.ERROR_CORRECT_L)
     pipe = tempfile.TemporaryFile()
     img.save(pipe)
     pipe.seek(0)

@@ -1,5 +1,5 @@
+from django.core.urlresolvers import reverse
 from django.db import models
-# TODO: phone
 
 class Contact(models.Model):
     card_id = models.CharField(max_length=64, blank=False,
@@ -31,6 +31,10 @@ class Contact(models.Model):
     @property
     def email(self):
         return self.local_user and self.local_user.email or self._email
+
+    def get_absolute_url(self):
+        return reverse('vcard', args=[self.card_id])
+
 
 class Phone(models.Model):
     contact = models.ForeignKey('Contact', null=False, blank=False)
